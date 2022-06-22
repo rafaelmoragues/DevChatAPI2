@@ -10,6 +10,7 @@ namespace DevChatAPI2.Models
         public string Name { get; set; }
         [Required]
         public int CategoryId { get; set; }
-        public CategoryChat Category { get; set; }
+        public CategoryChat? Category { get; set; }
+        public virtual ICollection<Message>? Messages { get; set; }
     }
 }
