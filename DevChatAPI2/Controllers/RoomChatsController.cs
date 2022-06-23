@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DevChatAPI2.Data;
 using DevChatAPI2.Models;
 using DevChatAPI2.Services.Interfaces;
+using DevChatAPI2.UOfWork;
+using DevChatAPI2.Responses;
 
 namespace DevChatAPI2.Controllers
 {
@@ -17,40 +19,45 @@ namespace DevChatAPI2.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IRoomChatService _roomChatService;
+        private readonly IUnitOfWork _uow;
 
-        public RoomChatsController(ApplicationDbContext context, IRoomChatService roomS)
+        public RoomChatsController(ApplicationDbContext context, IRoomChatService roomS, IUnitOfWork uow)
         {
             _context = context;
             _roomChatService = roomS;
+            _uow = uow;
         }
 
         // GET: api/RoomChats
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RoomChat>>> GetRoomChats()
-        {
-          if (_context.RoomChats == null)
-          {
-              return NotFound();
-          }
-            return await _context.RoomChats.ToListAsync();
-        }
+        //[HttpGet]
+        //public ActionResult<IEnumerable<RoomChat>> GetRoomChats()
+        //{
+        //  if (_uow.RoomChatRepository == null)
+        //  {
+        //      return NotFound();
+        //  }
+        //    List<RoomChat> groupList = _roomChatService.GetGroupChatsList();
+        //    return Ok(groupList);
+        //}
 
         // GET: api/RoomChats/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomChat>> GetRoomChat(int id)
+        public ActionResult<List<RoomResponse>> GetRoomChatsList(string id)
         {
-          if (_context.RoomChats == null)
+          if (_uow.RoomChatRepository == null)
           {
               return NotFound();
           }
-            var roomChat = await _context.RoomChats.FindAsync(id);
+            List<RoomResponse> groupList = _roomChatService.GetGroupChatsList();
+            var roomChat = _roomChatService.GetPrivChatList(id);
+            groupList.AddRange(roomChat);
 
             if (roomChat == null)
             {
                 return NotFound();
             }
 
-            return roomChat;
+            return groupList;
         }
         [HttpGet("/api/[controller]/priv")]
         public IActionResult GetPrivateChat([FromQuery] string idSender, [FromQuery] string idReceiver)
@@ -58,6 +65,13 @@ namespace DevChatAPI2.Controllers
             var room = _roomChatService.GetRoomChat(idSender, idReceiver);
             return Ok(room);
         }
+
+        //[HttpGet("/api/[controller]/group/{id}")]
+        //public IActionResult GetGroupChat(int id)
+        //{
+        //    var room = _roomChatService.GetRoomChat(idSender, idReceiver);
+        //    return Ok(room);
+        //}
 
         // PUT: api/RoomChats/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -93,7 +107,7 @@ namespace DevChatAPI2.Controllers
         // POST: api/RoomChats
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RoomChat>> PostRoomChat(RoomChat roomChat, [FromQuery] string idSender, [FromQuery] string idReceiver)
+        public async Task<ActionResult<RoomChat>> PostPrivRoomChat(RoomChat roomChat, [FromQuery] string idSender, [FromQuery] string idReceiver)
         {
           if (_context.RoomChats == null)
           {

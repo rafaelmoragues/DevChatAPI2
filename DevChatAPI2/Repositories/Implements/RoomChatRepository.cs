@@ -14,6 +14,8 @@ namespace DevChatAPI2.Repositories.Implements
         public RoomChat GetRoomFull(int id)
         {
             RoomChat res = _db.RoomChats.Where(r => r.Id == id).Include(r => r.Messages).FirstOrDefault();
+            var mes = res.Messages.OrderBy(x => x.Date).ToList();
+            res.Messages = mes;
             return res;
         }
     }

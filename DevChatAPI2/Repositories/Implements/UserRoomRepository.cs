@@ -13,6 +13,6 @@ namespace DevChatAPI2.Repositories.Implements
         public IEnumerable<UserRoom> GetRoomsFull(string id)
         {
             return _db.UserRooms.Where(r => r.UserId == id).Include(y => y.RoomChats).ToList();
-        }
+        }        
     }
 }
