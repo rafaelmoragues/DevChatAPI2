@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DevChatAPI2.Models;
+using DevChatAPI2.Request;
 using DevChatAPI2.Responses;
 
 namespace DevChatAPI2.Profiles
@@ -10,6 +11,7 @@ namespace DevChatAPI2.Profiles
         {
             CreateMap<RoomChat, RoomResponse>();
             CreateMap<Message, MessageResponse>();
+            CreateMap<MessageRequest, Message>();
         }
     }
 }

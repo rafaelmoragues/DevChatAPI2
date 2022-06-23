@@ -24,26 +24,24 @@ namespace DevChatAPI2.Services.Implements
             List<RoomResponse> resGroup = MapearResponse(groupChats);
             return resGroup;
         }
-        //mappear para que devuelva un roomresponse
-        public RoomResponse GetRoomChat(string user1Id, string user2Id)
+        public List<RoomResponse> GetPrivChatList(string id)
         {
-            //hacer que el find tenga el include de los roomchats, en el userroomrepo
+            List<RoomResponse> res = new List<RoomResponse>();
+            List<RoomChat> rchat = new List<RoomChat>();
+            List<UserRoom> userRooms = _uow.UserRoomRepository.GetRoomsFull(id).ToList();
+            foreach (UserRoom userRoom in userRooms)
+            {
+                rchat.Add(userRoom.RoomChats);
+            }
+            res = MapearResponse(rchat);
+            return res;
+        }
+        public RoomResponse GetPrivChatMsg(string user1Id, string user2Id)
+        {
             RoomChat roomChat = new RoomChat();
             List<UserRoom> list1 = _uow.UserRoomRepository.GetRoomsFull(user1Id).ToList();
             List<UserRoom> list2 = _uow.UserRoomRepository.GetRoomsFull(user2Id).ToList();
-            //List<UserRoom> aux = (from u in list1
-            //                      where u.RoomChats.CategoryId == 2
-            //                      select u).ToList();
-            //list1 = aux;
-            //aux = (from u in list2
-            //       where u.RoomChats.CategoryId == 2
-            //       select u).ToList();
-            //list2 = aux;
-            //UserRoom userRoom = (from i in list1
-            //            where list2.Any(u => u.RoomChats.Id == i.RoomChats.Id)
-            //            select i).FirstOrDefault();
 
-            //Las 3 busquedas anteriores las simplifico en una sola
             UserRoom userRoom = (from x in list1
                    where list2.Any(y => y.RoomChats.Id == x.RoomChats.Id && y.RoomChats.CategoryId == 2 && x.RoomChats.CategoryId == 2)
                    select x).FirstOrDefault();
@@ -59,23 +57,13 @@ namespace DevChatAPI2.Services.Implements
             }
             
             roomChat = _uow.RoomChatRepository.GetRoomFull(userRoom.RoomChatId);
-            //return roomChat;
             RoomResponse roomResponse = _mapper.Map<RoomResponse>(roomChat);
             return roomResponse;
-        }
-        
-        
-        public List<RoomResponse> GetPrivChatList(string id)
+        }       
+        public RoomResponse GetGroupChatMsg(int id)
         {
-            List<RoomResponse> res = new List<RoomResponse>();
-            List<RoomChat> rchat = new List<RoomChat>();
-            List<UserRoom> userRooms = _uow.UserRoomRepository.GetRoomsFull(id).ToList();
-            foreach (UserRoom userRoom in userRooms)
-            {
-                rchat.Add(userRoom.RoomChats);
-            }
-            res = MapearResponse(rchat);
-            return res;
+            RoomChat aux = _uow.RoomChatRepository.GetRoomFull(id);
+            return _mapper.Map<RoomResponse>(aux);
         }
         public void AddUserRoom(string userId, int roomId)
         {

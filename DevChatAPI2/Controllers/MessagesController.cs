@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DevChatAPI2.Data;
 using DevChatAPI2.Models;
 using DevChatAPI2.UOfWork;
+using DevChatAPI2.Request;
+using AutoMapper;
 
 namespace DevChatAPI2.Controllers
 {
@@ -17,10 +19,12 @@ namespace DevChatAPI2.Controllers
     {
 
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public MessagesController(IUnitOfWork uow)
+        public MessagesController(IUnitOfWork uow, IMapper mapper)
         {
             _uow = uow;
+            _mapper = mapper;
         }
 
         // GET: api/Messages
@@ -71,13 +75,13 @@ namespace DevChatAPI2.Controllers
         // POST: api/Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Message> PostMessage(Message message)
+        public ActionResult<Message> PostMessage(MessageRequest message)
         {
           if (_uow.MessageRepository == null)
           {
               return Problem("Entity set 'ApplicationDbContext.Messages'  is null.");
           }
-            _uow.MessageRepository.Insert(message);
+            _uow.MessageRepository.Insert(_mapper.Map<Message>(message));
             _uow.Save();
 
             //return CreatedAtAction("GetMessage", new { id = message.Id }, message);

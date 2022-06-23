@@ -6,9 +6,12 @@ namespace DevChatAPI2.Services.Interfaces
     public interface IRoomChatService
     {
         int AddRoomChat(RoomChat room);
-        List<RoomResponse> GetGroupChatsList();
-        RoomResponse GetRoomChat(string user1Id, string user2Id);
         void AddUserRoom(string userId, int roomId);
+        List<RoomResponse> GetGroupChatsList();
         List<RoomResponse> GetPrivChatList(string id);
+        RoomResponse GetPrivChatMsg(string user1Id, string user2Id);
+        RoomResponse GetGroupChatMsg(int id);
+        
+        
     }
 }

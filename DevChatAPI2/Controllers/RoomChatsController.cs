@@ -62,16 +62,16 @@ namespace DevChatAPI2.Controllers
         [HttpGet("/api/[controller]/priv")]
         public IActionResult GetPrivateChat([FromQuery] string idSender, [FromQuery] string idReceiver)
         {
-            var room = _roomChatService.GetRoomChat(idSender, idReceiver);
+            var room = _roomChatService.GetPrivChatMsg(idSender, idReceiver);
             return Ok(room);
         }
 
-        //[HttpGet("/api/[controller]/group/{id}")]
-        //public IActionResult GetGroupChat(int id)
-        //{
-        //    var room = _roomChatService.GetRoomChat(idSender, idReceiver);
-        //    return Ok(room);
-        //}
+        [HttpGet("/api/[controller]/group/{id}")]
+        public IActionResult GetGroupChat(int id)
+        {
+            var room = _roomChatService.GetGroupChatMsg(id);
+            return Ok(room);
+        }
 
         // PUT: api/RoomChats/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
