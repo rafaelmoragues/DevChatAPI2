@@ -107,7 +107,7 @@ namespace DevChatAPI2.Controllers
         // POST: api/RoomChats
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RoomChat>> PostPrivRoomChat(RoomChat roomChat, [FromQuery] string idSender, [FromQuery] string idReceiver)
+        public async Task<ActionResult<RoomChat>> PostPrivRoomChat([FromBody]RoomChat roomChat, [FromQuery] string idSender, [FromQuery] string idReceiver)
         {
           if (_context.RoomChats == null)
           {
@@ -118,7 +118,7 @@ namespace DevChatAPI2.Controllers
             _roomChatService.AddUserRoom(idReceiver, auxId);
             //_context.RoomChats.Add(roomChat);
             //await _context.SaveChangesAsync();
-            return CreatedAtAction("GetRoomChat", new { id = roomChat.Id }, roomChat);
+            return Ok();
         }
 
         // DELETE: api/RoomChats/5
