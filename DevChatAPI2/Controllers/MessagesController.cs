@@ -81,7 +81,9 @@ namespace DevChatAPI2.Controllers
           {
               return Problem("Entity set 'ApplicationDbContext.Messages'  is null.");
           }
-            _uow.MessageRepository.Insert(_mapper.Map<Message>(message));
+            Message mes = _mapper.Map<Message>(message);
+            mes.MessageTypeId = 1;
+            _uow.MessageRepository.Insert(mes);
             _uow.Save();
 
             //return CreatedAtAction("GetMessage", new { id = message.Id }, message);
