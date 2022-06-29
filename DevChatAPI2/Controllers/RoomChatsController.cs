@@ -63,12 +63,12 @@ namespace DevChatAPI2.Controllers
 
             return groupList;
         }
-        //[HttpGet("/api/[controller]/priv")]
-        //public IActionResult GetPrivateChat([FromQuery] string idSender, [FromQuery] string idReceiver)
-        //{
-        //    var room = _roomChatService.GetPrivChatMsg(idSender, idReceiver);
-        //    return Ok(room);
-        //}
+        [HttpPost("/api/[controller]/priv")]
+        public IActionResult PostPrivateChat([FromBody] RoomRequest rRequest)
+        {
+            var room = _roomChatService.GetPrivChatMsg(rRequest.IdSender,rRequest.SenderName, rRequest.ReceiverName, rRequest.IdReceiver);
+            return Ok(room);
+        }
 
         [HttpGet("/api/[controller]/group/{id}")]
         public IActionResult GetGroupChat(int id)

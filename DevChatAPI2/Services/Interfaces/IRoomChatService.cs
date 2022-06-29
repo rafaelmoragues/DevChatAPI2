@@ -9,7 +9,7 @@ namespace DevChatAPI2.Services.Interfaces
         void AddUserRoom(string userId, int roomId, string name);
         List<RoomResponse> GetGroupChatsList();
         List<RoomResponse> GetPrivChatList(string id);
-        //RoomResponse GetPrivChatMsg(string user1Id, string user2Id);
+        RoomResponse GetPrivChatMsg(string user1Id, string user1Name, string user2Name, string user2Id);
         RoomResponse GetGroupChatMsg(int id);
         
         
