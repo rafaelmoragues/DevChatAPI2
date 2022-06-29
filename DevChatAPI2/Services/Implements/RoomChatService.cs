@@ -39,30 +39,30 @@ namespace DevChatAPI2.Services.Implements
             res= _mapper.Map<List<RoomResponse>>(rchat);
             return res;
         }
-        public RoomResponse GetPrivChatMsg(string user1Id, string user2Id)
-        {
-            RoomChat roomChat = new RoomChat();
-            List<UserRoom> list1 = _uow.UserRoomRepository.GetRoomsFull(user1Id).ToList();
-            List<UserRoom> list2 = _uow.UserRoomRepository.GetRoomsFull(user2Id).ToList();
+        //public RoomResponse GetPrivChatMsg(string user1Id, string user2Id)
+        //{
+        //    RoomChat roomChat = new RoomChat();
+        //    List<UserRoom> list1 = _uow.UserRoomRepository.GetRoomsFull(user1Id).ToList();
+        //    List<UserRoom> list2 = _uow.UserRoomRepository.GetRoomsFull(user2Id).ToList();
 
-            UserRoom userRoom = (from x in list1
-                   where list2.Any(y => y.RoomChats.Id == x.RoomChats.Id && y.RoomChats.CategoryId == 2 && x.RoomChats.CategoryId == 2)
-                   select x).FirstOrDefault();
+        //    UserRoom userRoom = (from x in list1
+        //           where list2.Any(y => y.RoomChats.Id == x.RoomChats.Id && y.RoomChats.CategoryId == 2 && x.RoomChats.CategoryId == 2)
+        //           select x).FirstOrDefault();
 
-            //si no existe una sala privada entre los dos users creo una
-            if (userRoom == null)
-            {
-                roomChat.Name = "priv";
-                roomChat.CategoryId = 2;
-                int aux = AddRoomChat(roomChat);
-                AddUserRoom(user1Id, aux);
-                AddUserRoom(user2Id, aux);
-            }
+        //    //si no existe una sala privada entre los dos users creo una
+        //    if (userRoom == null)
+        //    {
+        //        roomChat.Name = "priv";
+        //        roomChat.CategoryId = 2;
+        //        int aux = AddRoomChat(roomChat);
+        //        AddUserRoom(user1Id, aux);
+        //        AddUserRoom(user2Id, aux);
+        //    }
             
-            roomChat = _uow.RoomChatRepository.GetRoomFull(userRoom.RoomChatId);
-            RoomResponse roomResponse = _mapper.Map<RoomResponse>(roomChat);
-            return roomResponse;
-        }       
+        //    roomChat = _uow.RoomChatRepository.GetRoomFull(userRoom.RoomChatId);
+        //    RoomResponse roomResponse = _mapper.Map<RoomResponse>(roomChat);
+        //    return roomResponse;
+        //}       
         public RoomResponse GetGroupChatMsg(int id)
         {
             RoomChat aux = _uow.RoomChatRepository.GetRoomFull(id);
