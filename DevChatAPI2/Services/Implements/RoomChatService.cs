@@ -28,12 +28,15 @@ namespace DevChatAPI2.Services.Implements
         {
             List<RoomResponse> res = new List<RoomResponse>();
             List<RoomChat> rchat = new List<RoomChat>();
+            RoomChat rChatAux = new RoomChat();
             List<UserRoom> userRooms = _uow.UserRoomRepository.GetRoomsFull(id).ToList();
             foreach (UserRoom userRoom in userRooms)
             {
-                rchat.Add(userRoom.RoomChats);
+                rChatAux = userRoom.RoomChats;
+                rChatAux.Name = userRoom.Name;
+                rchat.Add(rChatAux);
             }
-            res = MapearResponse(rchat);
+            res= _mapper.Map<List<RoomResponse>>(rchat);
             return res;
         }
         public RoomResponse GetPrivChatMsg(string user1Id, string user2Id)
@@ -65,11 +68,12 @@ namespace DevChatAPI2.Services.Implements
             RoomChat aux = _uow.RoomChatRepository.GetRoomFull(id);
             return _mapper.Map<RoomResponse>(aux);
         }
-        public void AddUserRoom(string userId, int roomId)
+        public void AddUserRoom(string userId, int roomId, string name)
         {
             UserRoom u = new UserRoom();
             u.RoomChatId = roomId;
             u.UserId = userId;
+            u.Name = name;
             _uow.UserRoomRepository.Insert(u);
             _uow.Save();
         }

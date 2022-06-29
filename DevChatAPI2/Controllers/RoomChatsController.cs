@@ -10,6 +10,7 @@ using DevChatAPI2.Models;
 using DevChatAPI2.Services.Interfaces;
 using DevChatAPI2.UOfWork;
 using DevChatAPI2.Responses;
+using DevChatAPI2.Request;
 
 namespace DevChatAPI2.Controllers
 {
@@ -20,6 +21,9 @@ namespace DevChatAPI2.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IRoomChatService _roomChatService;
         private readonly IUnitOfWork _uow;
+
+        //https://documenter.getpostman.com/view/20744984/UzBsKQqh documentacion de api
+        //en Postman
 
         public RoomChatsController(ApplicationDbContext context, IRoomChatService roomS, IUnitOfWork uow)
         {
@@ -59,12 +63,12 @@ namespace DevChatAPI2.Controllers
 
             return groupList;
         }
-        [HttpGet("/api/[controller]/priv")]
-        public IActionResult GetPrivateChat([FromQuery] string idSender, [FromQuery] string idReceiver)
-        {
-            var room = _roomChatService.GetPrivChatMsg(idSender, idReceiver);
-            return Ok(room);
-        }
+        //[HttpGet("/api/[controller]/priv")]
+        //public IActionResult GetPrivateChat([FromQuery] string idSender, [FromQuery] string idReceiver)
+        //{
+        //    var room = _roomChatService.GetPrivChatMsg(idSender, idReceiver);
+        //    return Ok(room);
+        //}
 
         [HttpGet("/api/[controller]/group/{id}")]
         public IActionResult GetGroupChat(int id)
@@ -107,15 +111,16 @@ namespace DevChatAPI2.Controllers
         // POST: api/RoomChats
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RoomChat>> PostPrivRoomChat([FromBody]RoomChat roomChat, [FromQuery] string idSender, [FromQuery] string idReceiver)
+        public async Task<ActionResult<RoomChat>> PostPrivRoomChat([FromBody] RoomRequest rRequest )
         {
           if (_context.RoomChats == null)
           {
               return Problem("Entity set 'ApplicationDbContext.RoomChats'  is null.");
           }
-          int auxId =_roomChatService.AddRoomChat(roomChat);
-            _roomChatService.AddUserRoom(idSender, auxId);
-            _roomChatService.AddUserRoom(idReceiver, auxId);
+          RoomChat rAux = new RoomChat();
+          int auxId =_roomChatService.AddRoomChat(rAux);
+            _roomChatService.AddUserRoom(rRequest.IdSender, auxId, rRequest.ReceiverName);
+            _roomChatService.AddUserRoom(rRequest.IdReceiver, auxId, rRequest.SenderName);
             //_context.RoomChats.Add(roomChat);
             //await _context.SaveChangesAsync();
             return Ok();
